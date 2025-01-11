@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goats</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #0f0f0f;
+            color: #fff;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .background-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            z-index: -1;
+        }
+
+        .background-video.visible {
+            opacity: 1;
+        }
+
+        .blur-box {
+            position: absolute;
+            width: 60%;
+            height: 70%;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .blur-box.visible {
+            opacity: 1;
+        }
+
+        .intro {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            background: #0f0f0f;
+            z-index: 10;
+            transition: opacity 1s ease;
+        }
+
+        .intro.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .intro-text {
+            font-size: 2rem;
+            color: #8f00ff;
+            text-shadow: 0 0 10px #8f00ff, 0 0 20px #ff00ff;
+            animation: glow 1.5s infinite alternate;
+            cursor: pointer;
+        }
+
+        @keyframes glow {
+            0% { text-shadow: 0 0 10px #8f00ff, 0 0 20px #ff00ff; }
+            100% { text-shadow: 0 0 20px #ff00ff, 0 0 30px #8f00ff; }
+        }
+
+        .discord-text, .animation {
+            font-size: 2rem;
+            white-space: pre;
+            overflow: hidden;
+            border-right: 2px solid;
+            animation: blink 0.5s step-end infinite;
+        }
+
+        .animation {
+            color: #8f00ff;
+        }
+
+        .discord-text {
+            font-size: 1.5rem;
+            color: #fff;
+            margin-top: 30px;
+        }
+
+        @keyframes blink {
+            50% { border-color: transparent; }
+        }
+
+        .portfolio {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .portfolio.visible {
+            opacity: 1;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .circle-container {
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+        }
+
+        .circle-container.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .circle {
+            width: 150px;
+            height: 150px;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+
+        .circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .settings-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 20;
+            transition: all 0.3s ease;
+        }
+
+        .settings-panel {
+            position: absolute;
+            bottom: 60px;
+            right: 20px;
+            width: 250px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+            display: none;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .settings-panel h3 {
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .settings-panel input[type="text"], 
+        .settings-panel input[type="password"] {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #8f00ff;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .settings-panel input[type="text"]:focus,
+        .settings-panel input[type="password"]:focus {
+            border-color: #ff00ff;
+        }
+
+        #loginPanel button {
+            width: 100%;
+            padding: 10px;
+            background: #8f00ff;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+        #adminButton{
+            width: 100%;
+            padding: 10px;
+            background: #8f00ff;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+        #adminButton:hover {
+            background: #ff00ff;
+        }
+        #loginPanel button:hover {
+            background: #ff00ff;
+        }
+
+        #loginFeedback {
+            font-size: 1rem;
+            color: #fff;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            background: #8f00ff;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            background: #8f00ff;
+        }
+    </style>
+</head>
+<body>
+    <video class="background-video" id="bgVideo" src="img/background.mp4" loop autoplay muted></video>
+    <div class="intro" onclick="startAnimation()">
+        <div class="intro-text">Clique aqui</div>
+    </div>
+    <div class="animation" id="textAnimation"></div>
+    <div class="portfolio" id="portfolio">
+        <div class="blur-box" id="blurBox">
+            <div class="container">
+                <div class="circle-container"><div class="circle"><img src="img/abismo.png" alt="Abismo"></div><div class="circle-name">Abismo</div></div>
+                <div class="circle-container"><div class="circle"><img src="img/samz.png" alt="Samz"></div><div class="circle-name">Samz</div></div>
+                <div class="circle-container"><div class="circle"><img src="img/morais.gif" alt="Morais"></div><div class="circle-name">Morais</div></div>
+                <div class="circle-container"><div class="circle"><img src="img/rakan.gif" alt="Rakan"></div><div class="circle-name">Rakan</div></div>
+            </div>
+            <div class="discord-text" id="discordText"></div>
+        </div>
+    </div>
+    <button class="settings-button" onclick="toggleSettings()">🛠️</button>
+    <div class="settings-panel" id="settingsPanel">
+        <h3>Configurações</h3>
+        <label>Brilho</label>
+        <input type="range" min="0" max="100" value="50" id="brightnessSlider">
+        <label>Volume</label>
+        <input type="range" min="0" max="100" value="50" id="volumeSlider">
+        <button id="adminButton" onclick="showLoginPanel()">Admin</button>
+        <div id="loginPanel" style="display:none;">
+            <h3>Login</h3>
+            <input type="text" placeholder="Login" id="loginInput"><br>
+            <input type="password" placeholder="Senha" id="passwordInput"><br>
+            <button onclick="checkLogin()">Entrar</button>
+            <div id="loginFeedback" style="margin-top: 10px;"></div>
+        </div>
+    </div>
+    <script>
+        const bgVideo = document.getElementById('bgVideo');
+        const portfolio = document.getElementById('portfolio');
+        const blurBox = document.getElementById('blurBox');
+        const textAnimation = document.getElementById('textAnimation');
+        const discordText = document.getElementById('discordText');
+        const animationText = ['r', 'ra', 'rak', 'raka', 'rakan', 'rakandev', 'rakandev.', 'rakandev.x', 'rakandev.xy', 'rakandev.xyz', 'rakandev.xyz.', 'rakandev.xyz..', 'rakandev.xyz...'];
+
+        bgVideo.volume = 0.2;
+
+        function startAnimation() {
+            document.querySelector('.intro').classList.add('hidden');
+            bgVideo.muted = false;
+            let index = 0;
+            let interval = setInterval(() => {
+                if (index < animationText.length) {
+                    textAnimation.textContent = animationText[index++];
+                } else {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        let reverseInterval = setInterval(() => {
+                            if (textAnimation.textContent.length > 0) {
+                                textAnimation.textContent = textAnimation.textContent.slice(0, -1);
+                            } else {
+                                clearInterval(reverseInterval);
+                                textAnimation.style.display = 'none';
+                                discordText.textContent = 'discord.gg/leste';
+                                portfolio.classList.add('visible');
+                                blurBox.classList.add('visible');
+                                bgVideo.classList.add('visible');
+                                document.querySelectorAll('.circle-container').forEach(el => el.classList.add('visible'));
+                            }
+                        }, 100);
+                    }, 500);
+                }
+            }, 200);
+        }
+
+        function toggleSettings() {
+            document.getElementById('settingsPanel').style.display = document.getElementById('settingsPanel').style.display === 'none' ? 'block' : 'none';
+        }
+
+        document.getElementById('brightnessSlider').addEventListener('input', function() {
+            document.body.style.filter = `brightness(${this.value}%)`;
+        });
+
+        document.getElementById('volumeSlider').addEventListener('input', function() {
+            bgVideo.volume = this.value / 100;
+        });
+
+        function showLoginPanel() {
+            const loginPanel = document.getElementById('loginPanel');
+            loginPanel.style.display = loginPanel.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function checkLogin() {
+            const login = document.getElementById('loginInput').value;
+            const password = document.getElementById('passwordInput').value;
+            const validLogins = {
+                'samz': 'discord.gg/leste',
+                'abismo': 'discord.gg/leste',
+                'morais': 'discord.gg/leste',
+                'rakan': 'discord.gg/leste'
+            };
+
+            if (validLogins[login] === password) {
+                document.getElementById('loginFeedback').textContent = 'fvck scariest';
+            } else {
+                document.getElementById('loginFeedback').textContent = '???';
+            }
+        }
+    </script>
+</body>
+</html>
