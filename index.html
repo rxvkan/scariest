@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Goats</title>
+    <title id="animatedTitle">@</title>
     <style>
         body {
             margin: 0;
@@ -103,7 +103,7 @@
         .discord-text {
             font-size: 1.5rem;
             color: #fff;
-            margin-top: 30px;
+            margin-top: 50px;
         }
 
         @keyframes blink {
@@ -159,6 +159,26 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+
+        .circle-name {
+            color: #fff;
+            margin-top: 10px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .badge-container {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 8px;
+        }
+
+        .badge {
+            cursor: pointer;
+            width: 23px;
+            height: 23px;
         }
 
         .settings-button {
@@ -260,6 +280,75 @@
         input[type="range"]::-moz-range-thumb {
             background: #8f00ff;
         }
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink {
+            50% { border-color: transparent; }
+        }
+
+        #animatedTitle {
+            overflow: hidden;
+            border-right: 2px solid;
+            white-space: nowrap;
+            width: 0;
+            animation: typing 2s steps(10) 1s 1 normal both, blink 0.5s step-end infinite;
+        }
+        .description-box {
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 250px;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease-in-out;
+            margin-top: 20px;
+            margin-left: -135px;
+        }
+
+        .circle-name:hover + .description-box {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .circle-name:hover + .description-box.fade-in {
+            animation: fadeIn 0.5s forwards;
+        }
+
+        .circle-name:hover + .description-box.fade-out {
+            animation: fadeOut 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+        }
     </style>
 </head>
 <body>
@@ -271,10 +360,42 @@
     <div class="portfolio" id="portfolio">
         <div class="blur-box" id="blurBox">
             <div class="container">
-                <div class="circle-container"><div class="circle"><img src="img/abismo.png" alt="Abismo"></div><div class="circle-name">Abismo</div></div>
-                <div class="circle-container"><div class="circle"><img src="img/samz.png" alt="Samz"></div><div class="circle-name">Samz</div></div>
-                <div class="circle-container"><div class="circle"><img src="img/morais.gif" alt="Morais"></div><div class="circle-name">Morais</div></div>
-                <div class="circle-container"><div class="circle"><img src="img/rakan.gif" alt="Rakan"></div><div class="circle-name">Rakan</div></div>
+                <div class="circle-container">
+                    <div class="circle"><img src="img/abismo.png" alt="Abismo"></div>
+                    <div class="circle-name" onmouseover="showDescription(this)" onmouseout="hideDescription(this)">rastrear</div>
+                    <div class="description-box">abismo fofo</div>
+                    <div class="badge-container">
+                        <img class="badge" src="img/nitro.png" alt="Nitro">
+                    </div>
+                </div>
+                <div class="circle-container">
+                    <div class="circle"><img src="img/samz.png" alt="Samz"></div>
+                    <div class="circle-name" onmouseover="showDescription(this)" onmouseout="hideDescription(this)">produto</div>
+                    <div class="description-box">samz fofo</div>
+                    <div class="badge-container">
+                        <img class="badge" src="img/boost.png" alt="Nitro">
+                        <img class="badge" src="img/quest.png" alt="Quest">
+                    </div>
+                </div>
+                <div class="circle-container">
+                    <div class="circle"><img src="img/yuta.png" alt="Yuta"></div>
+                    <div class="circle-name" onmouseover="showDescription(this)" onmouseout="hideDescription(this)">rejeitam</div>
+                    <div class="description-box">Menor pecinha da leste</div>
+                    <div class="badge-container">
+                        <img class="badge" src="img/nitro.png" alt="Nitro">
+                        <img class="badge" src="img/boost.png" alt="Boost">
+                    </div>
+                </div>
+                <div class="circle-container">
+                    <div class="circle"><img src="img/rakan.gif" alt="Rakan"></div>
+                    <div class="circle-name" onmouseover="showDescription(this)" onmouseout="hideDescription(this)">gjuv</div>
+                    <div class="description-box">Web & Game developer. 16</div>
+                    <div class="badge-container">
+                        <img class="badge" src="img/nitro.png" alt="Nitro">
+                        <img class="badge" src="img/boost.png" alt="Boost">
+                        <img class="badge" src="img/dev.png" alt="Developer">
+                    </div>
+                </div>
             </div>
             <div class="discord-text" id="discordText"></div>
         </div>
@@ -301,9 +422,54 @@
         const blurBox = document.getElementById('blurBox');
         const textAnimation = document.getElementById('textAnimation');
         const discordText = document.getElementById('discordText');
-        const animationText = ['r', 'ra', 'rak', 'raka', 'rakan', 'rakandev', 'rakandev.', 'rakandev.x', 'rakandev.xy', 'rakandev.xyz', 'rakandev.xyz.', 'rakandev.xyz..', 'rakandev.xyz...'];
+        const animationText = ['s', 'sc', 'sca', 'scar', 'scari', 'scarie', 'scaries', 'scariest', 'scariest.', 'scariest.x', 'scariest.xy', 'scariest.xyz'];
 
         bgVideo.volume = 0.2;
+
+
+        function showDescription(element) {
+            const descriptionBox = element.nextElementSibling;
+            descriptionBox.classList.remove('fade-out');
+            descriptionBox.classList.add('fade-in');
+        }
+
+        function hideDescription(element) {
+            const descriptionBox = element.nextElementSibling;
+            descriptionBox.classList.remove('fade-in');
+            descriptionBox.classList.add('fade-out');
+        }
+
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const titleElement = document.getElementById("animatedTitle");
+            const text = "Scariest.xyz";
+            let index = 0;
+
+            function typeWriter() {
+                if (index < text.length) {
+                    titleElement.textContent = "@" + text.substring(0, index + 1);
+                    index++;
+                    setTimeout(typeWriter, 200);
+                } else {
+                    setTimeout(() => {
+                        eraseWriter();
+                    }, 2000);
+                }
+            }
+
+            function eraseWriter() {
+                if (index > 0) {
+                    titleElement.textContent = "@" + text.substring(0, index - 1);
+                    index--;
+                    setTimeout(eraseWriter, 100);
+                } else {
+                    setTimeout(() => {
+                        typeWriter();
+                    }, 1000);
+                }
+            }
+            typeWriter();
+        });
 
         function startAnimation() {
             document.querySelector('.intro').classList.add('hidden');
